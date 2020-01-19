@@ -32,5 +32,6 @@ service nqnfc_hal_service /vendor/bin/hw/vendor.nxp.hardware.nfc@1.0-service
     user nfc
     group nfc
 
-on property:nfc.initialized=true && property:def_nfc_on=false
+on property:nfc.initialized=true && property:def_nfc_on=false && property:nfc_hal_started=false
     stop nqnfc_hal_service
+    setprop nfc_hal_started true
