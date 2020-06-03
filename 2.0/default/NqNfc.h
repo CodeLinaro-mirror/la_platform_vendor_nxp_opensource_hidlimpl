@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2019, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2017-2020, The Linux Foundation. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,13 +27,37 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*
+ * Not a contribution.
+ */
+
+/*
+ *  Copyright 2018-2020 NXP
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 #ifndef VENDOR_NXP_HARDWARE_NFC_V2_0_NQNFC_H
 #define VENDOR_NXP_HARDWARE_NFC_V2_0_NQNFC_H
 
 #include <vendor/nxp/hardware/nfc/2.0/INqNfc.h>
-#include <vendor/nxp/hardware/nfc/2.0/types.h>
 #include <hidl/MQDescriptor.h>
 #include <hidl/Status.h>
+
+enum Constants : uint16_t {
+    HAL_NFC_ESE_HARD_RESET = 5,
+};
+
 
 namespace vendor {
 namespace nxp {
@@ -42,31 +66,25 @@ namespace nfc {
 namespace V2_0 {
 namespace implementation {
 
-using ::android::hidl::base::V1_0::DebugInfo;
 using ::android::hidl::base::V1_0::IBase;
 using ::vendor::nxp::hardware::nfc::V2_0::INqNfc;
-using ::vendor::nxp::hardware::nfc::V2_0::nfc_nci_IoctlInOutData_t;
-using ::vendor::nxp::hardware::nfc::V2_0::nfc_nci_ExtnOutputData_t;
-using ::vendor::nxp::hardware::nfc::V2_0::NfcEvent2;
-using ::android::hardware::hidl_string;
 using ::android::hardware::hidl_vec;
 using ::android::hardware::Return;
 using ::android::hardware::Void;
-using ::android::sp;
 
 struct NqNfc : public INqNfc {
-    // Methods from ::vendor::nxp::hardware::nfc::V1_0::INqNfc follow.
-    Return<void> ioctl(uint64_t ioctlType, const hidl_vec<uint8_t>& inputData, ioctl_cb _hidl_cb) override;
-
-    // Methods from ::vendor::nxp::hardware::nfc::V1_1::INqNfc follow.
+    // Methods from ::vendor::nxp::hardware::nfc::V2_0::INqNfc follow.
     Return<void> getNfcChipId(getNfcChipId_cb _hidl_cb);
     Return<void> getNfcFirmwareVersion(getNfcFirmwareVersion_cb _hidl_cb);
-
-    // Methods from ::vendor::nxp::hardware::nfc::V2_0::INqNfc follow.
-    Return<void> getSystemProperty(const ::android::hardware::hidl_string& key,
-          getSystemProperty_cb _hidl_cb) override;
-    Return<bool> setSystemProperty(const ::android::hardware::hidl_string& key,
-          const ::android::hardware::hidl_string& value)  override;
+    Return<void> getVendorParam(const ::android::hardware::hidl_string &key,
+          getVendorParam_cb _hidl_cb) override;
+    Return<bool> setVendorParam(const ::android::hardware::hidl_string &key,
+          const ::android::hardware::hidl_string &value) override;
+    Return<bool> resetEse(uint64_t resetType) override;
+    Return<bool> setEseUpdateState(NxpNfcHalEseState state) override;
+    Return<bool> setNxpTransitConfig(const ::android::hardware::hidl_string &strval) override;
+    Return<bool> isJcopUpdateRequired() override;
+    Return<bool> isLsUpdateRequired() override;
 };
 
 }  // namespace implementation
