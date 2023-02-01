@@ -48,6 +48,13 @@ using android::sp;
 using android::status_t;
 
 int main() {
+    // Not registering the HAL service when device node is not present
+    if (access("/dev/nq-nci",F_OK)!=0) {
+      ALOGE("Not registering the NXP HAL service when device node is not present");
+      configureRpcThreadpool(0, false /*callerWillJoin*/);
+      joinRpcThreadpool();
+    }
+
     configureRpcThreadpool(1, true /*callerWillJoin*/);
     status_t status;
 
