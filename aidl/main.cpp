@@ -39,13 +39,17 @@ void startNxpNfcAidlService() {
   binder_status_t status = AServiceManager_addService(
       nxp_nfc_service->asBinder().get(), nxpNfcInstName.c_str());
   ALOGI("NxpNfc Registered INxpNfc service status: %d", status);
-  //ALOGI("NxpNfc Registered INxpNfc service status: %s", status.getMessage());
   CHECK(status == STATUS_OK);
   ABinderProcess_joinThreadPool();
 }
 
 int main() {
   ALOGI("NFC AIDL HAL starting up");
+
+  // Not register HAL service if device node is not present
+  if (access("/dev/nq-nci",F_OK)!=0)
+    ABinderProcess_joinThreadPool();
+
   if (!ABinderProcess_setThreadPoolMaxThreadCount(1)) {
     ALOGE("failed to set thread pool max thread count");
     return 1;
