@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- *  Copyright 2019-2022 NXP
+ *  Copyright 2019-2023 NXP
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -49,6 +49,7 @@
 #include "Nfc.h"
 #include <log/log.h>
 #include <memunreachable/memunreachable.h>
+#include "NfcExtns.h"
 #include "phNxpNciHal_Adaptation.h"
 #include "phNfcStatus.h"
 #include "phNxpNciHal_ext.h"
@@ -165,14 +166,16 @@ Return<V1_0::NfcStatus> Nfc::closeForPowerOffCase() {
 
 Return<void> Nfc::getConfig(getConfig_cb hidl_cb) {
   android::hardware::nfc::V1_1::NfcConfig nfcVendorConfig;
-  phNxpNciHal_getVendorConfig(nfcVendorConfig);
+  NfcExtns nfcExtns;
+  nfcExtns.getConfig(nfcVendorConfig);
   hidl_cb(nfcVendorConfig);
   return Void();
 }
 
 Return<void> Nfc::getConfig_1_2(getConfig_1_2_cb hidl_cb) {
   NfcConfig nfcVendorConfig;
-  phNxpNciHal_getVendorConfig_1_2(nfcVendorConfig);
+  NfcExtns nfcExtns;
+  nfcExtns.getConfig(nfcVendorConfig);
   hidl_cb(nfcVendorConfig);
   return Void();
 }

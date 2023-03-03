@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- *  Copyright 2022 NXP
+ *  Copyright 2022-2023 NXP
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -62,14 +62,16 @@ namespace nxpnfc_aidl {
                               static_cast<int64_t>(status));
 }
 
-::ndk::ScopedAStatus NxpNfc::setNxpTransitConfig( const std::string& strval,bool* _aidl_return) {
-  *_aidl_return = true;
+::ndk::ScopedAStatus NxpNfc::setNxpTransitConfig(const std::string& strval,
+                                                 bool* _aidl_return) {
+  *_aidl_return = false;
   ALOGD("NxpNfc::setNxpTransitConfig Entry");
 
   *_aidl_return = phNxpNciHal_setNxpTransitConfig((char*)strval.c_str(), (uint64_t)strval.size());
 
   ALOGD("NxpNfc::setNxpTransitConfig Exit");
-  return ndk::ScopedAStatus::fromServiceSpecificError(
+  return *_aidl_return == true ? ndk::ScopedAStatus::ok()
+                               : ndk::ScopedAStatus::fromServiceSpecificError(
                               static_cast<bool>(*_aidl_return));
 }
 

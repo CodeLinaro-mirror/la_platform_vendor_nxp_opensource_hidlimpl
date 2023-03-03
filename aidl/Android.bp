@@ -26,6 +26,7 @@ cc_binary {
     srcs: [
         "main.cpp",
         "Nfc.cpp",
+        "NfcExtns.cpp",
         "NxpNfc.cpp",
     ],
     include_dirs: [

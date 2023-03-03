@@ -46,13 +46,16 @@
  */
 
 #define LOG_TAG "android.hardware.nfc@1.2-impl"
-#include <log/log.h>
 #include "Nfc.h"
+#include <log/log.h>
+#include <memunreachable/memunreachable.h>
+#include "NfcExtns.h"
 #include "phNxpNciHal_Adaptation.h"
 #include "phNfcStatus.h"
+#include "phNxpNciHal_ext.h"
 
-#define CHK_STATUS(x) ((x) == NFCSTATUS_SUCCESS) \
-      ? (V1_0::NfcStatus::OK) : (V1_0::NfcStatus::FAILED)
+#define CHK_STATUS(x) \
+  ((x) == NFCSTATUS_SUCCESS) ? (V1_0::NfcStatus::OK) : (V1_0::NfcStatus::FAILED)
 
 extern bool nfc_debug_enabled;
 
@@ -64,6 +67,7 @@ namespace implementation {
 
 sp<V1_1::INfcClientCallback> Nfc::mCallbackV1_1 = nullptr;
 sp<V1_0::INfcClientCallback> Nfc::mCallbackV1_0 = nullptr;
+
 
 Return<V1_0::NfcStatus> Nfc::open_1_1(
     const sp<V1_1::INfcClientCallback>& clientCallback) {
@@ -88,7 +92,7 @@ Return<V1_0::NfcStatus> Nfc::open(
     mCallbackV1_0 = clientCallback;
     mCallbackV1_0->linkToDeath(this, 0 /*cookie*/);
   }
-
+  printNfcMwVersion();
   NFCSTATUS status = phNxpNciHal_open(eventCallback, dataCallback);
   ALOGD_IF(nfc_debug_enabled, "Nfc::open Exit");
   return CHK_STATUS(status);
@@ -101,7 +105,7 @@ Return<uint32_t> Nfc::write(const hidl_vec<uint8_t>& data) {
 
 Return<V1_0::NfcStatus> Nfc::coreInitialized(const hidl_vec<uint8_t>& data) {
   hidl_vec<uint8_t> copy = data;
-  NFCSTATUS status = phNxpNciHal_core_initialized(&copy[0]);
+  NFCSTATUS status = phNxpNciHal_core_initialized(copy.size(), &copy[0]);
   return CHK_STATUS(status);
 }
 
@@ -162,19 +166,45 @@ Return<V1_0::NfcStatus> Nfc::closeForPowerOffCase() {
 
 Return<void> Nfc::getConfig(getConfig_cb hidl_cb) {
   android::hardware::nfc::V1_1::NfcConfig nfcVendorConfig;
-  phNxpNciHal_getVendorConfig(nfcVendorConfig);
-  hidl_cb(nfcVendorConfig);
-  return Void();
-}
-Return<void> Nfc::getConfig_1_2(getConfig_1_2_cb hidl_cb) {
-  NfcConfig nfcVendorConfig;
-  phNxpNciHal_getVendorConfig_1_2(nfcVendorConfig);
+  NfcExtns nfcExtns;
+  nfcExtns.getConfig(nfcVendorConfig);
   hidl_cb(nfcVendorConfig);
   return Void();
 }
 
+Return<void> Nfc::getConfig_1_2(getConfig_1_2_cb hidl_cb) {
+  NfcConfig nfcVendorConfig;
+  NfcExtns nfcExtns;
+  nfcExtns.getConfig(nfcVendorConfig);
+  hidl_cb(nfcVendorConfig);
+  return Void();
+}
+
+void Nfc::serviceDied(uint64_t /*cookie*/, const wp<IBase>& /*who*/) {
+  if (mCallbackV1_1 == nullptr && mCallbackV1_0 == nullptr) {
+    return;
+  }
+  phNxpNciHal_close(true);
+
+  if (mCallbackV1_1 != nullptr) {
+    mCallbackV1_1->unlinkToDeath(this);
+    mCallbackV1_1 = nullptr;
+  }
+  if (mCallbackV1_0 != nullptr) {
+    mCallbackV1_0->unlinkToDeath(this);
+    mCallbackV1_0 = nullptr;
+  }
+}
+
+Return<void> Nfc::debug(const hidl_handle& /* fd */,
+                        const hidl_vec<hidl_string>& /* options */) {
+  ALOGD_IF(nfc_debug_enabled, "\n Nfc HAL MemoryLeak Info =  %s \n",
+           android::GetUnreachableMemoryString(true, 10000).c_str());
+  return Void();
+}
+
 }  // namespace implementation
-}  // namespace V1_1
+}  // namespace V1_2
 }  // namespace nfc
 }  // namespace hardware
 }  // namespace android
