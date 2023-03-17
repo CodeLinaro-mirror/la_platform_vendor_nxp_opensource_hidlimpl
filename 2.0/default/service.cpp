@@ -26,12 +26,23 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+/*********************************************************************************
+ **
+ ** Changes from Qualcomm Innovation Center are provided under the following license:
+ ** Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+ ** SPDX-License-Identifier: BSD-3-Clause-Clear
+ **
+ *********************************************************************************/
 
 #define LOG_TAG "vendor.nxp.hardware.nfc@2.0-service"
 
 #include <hidl/LegacySupport.h>
 #include "Nfc.h"
 #include "NqNfc.h"
+
+#if(NXP_NFC_RECOVERY == TRUE)
+#include "phNxpNciHal_Recovery.h"
+#endif
 
 using android::hardware::nfc::V1_2::INfc;
 using android::hardware::nfc::V1_2::implementation::Nfc;
@@ -48,6 +59,10 @@ int main() {
     status_t status;
 
     sp<INfc> nfc_service = new Nfc();
+    #if(NXP_NFC_RECOVERY == TRUE)
+      phNxpNciHal_RecoverFWTearDown();
+    #endif
+
     status = nfc_service->registerAsService();
     LOG_ALWAYS_FATAL_IF(status != OK, "Error while registering nfc AOSP service: %d", status);
 
