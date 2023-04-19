@@ -1,0 +1,53 @@
+cc_binary {
+    name: "android.hardware.nfc-service.nxp",
+    relative_install_path: "hw",
+    init_rc: ["nfc-service-nxp.rc"],
+    vendor: true,
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wextra",
+        "-DNXP_NFC_RECOVERY=TRUE",
+    ],
+    shared_libs: [
+	"nfc_nci.nqx.default.hw",
+        "libbase",
+        "liblog",
+        "libcutils",
+        "libutils",
+        "libhidlbase",
+        "libbinder_ndk",
+        "android.hardware.nfc-V1-ndk",
+        "android.hardware.nfc@1.2",
+        "libhardware",
+        "vendor.nxp.hardware.nfc@2.0",
+        "vendor.nxp.nxpnfc_aidl-V1-ndk",
+    ],
+    srcs: [
+        "main.cpp",
+        "Nfc.cpp",
+        "NfcExtns.cpp",
+        "NxpNfc.cpp",
+    ],
+    include_dirs: [
+       "vendor/nxp/opensource/halimpl/snxxx/halimpl/common",
+       "vendor/nxp/opensource/halimpl/snxxx/halimpl/dnld",
+       "vendor/nxp/opensource/halimpl/snxxx/halimpl/hal",
+       "vendor/nxp/opensource/halimpl/snxxx/halimpl/inc",
+       "vendor/nxp/opensource/halimpl/snxxx/halimpl/log",
+       "vendor/nxp/opensource/halimpl/snxxx/halimpl/utils",
+       "vendor/nxp/opensource/halimpl/snxxx/halimpl/mifare",
+       "vendor/nxp/opensource/halimpl/snxxx/halimpl/recovery",
+       //"vendor/nxp/opensource/halimpl/snxxx/halimpl/eseclients_extns/inc/",
+       "vendor/nxp/opensource/halimpl/snxxx/extns/impl/nxpnfc/aidl",
+    ],
+
+    header_libs: [
+        "libhardware_headers",
+    ],
+    sanitize: {
+        cfi: true,
+        misc_undefined: ["signed-integer-overflow",
+                         "unsigned-integer-overflow"],
+    },
+}
