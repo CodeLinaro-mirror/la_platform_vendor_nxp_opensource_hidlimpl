@@ -1,5 +1,5 @@
 cc_binary {
-    name: "android.hardware.nfc-service.nxp",
+    name: "android.hardware.nqnfc-service.nxp",
     relative_install_path: "hw",
     init_rc: ["nfc-service-nxp.rc"],
     vendor: true,
