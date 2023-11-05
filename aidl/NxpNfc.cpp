@@ -16,9 +16,10 @@
  *
  ******************************************************************************/
 
+#include "NxpNfc.h"
+
 #include <log/log.h>
 
-#include "NxpNfc.h"
 #include "phNxpNciHal.h"
 #include "phNxpNciHal_Adaptation.h"
 
@@ -29,15 +30,18 @@ namespace vendor {
 namespace nxp {
 namespace nxpnfc_aidl {
 
-::ndk::ScopedAStatus NxpNfc::getVendorParam(const std::string& key, std::string* _aidl_return) {
+::ndk::ScopedAStatus NxpNfc::getVendorParam(const std::string& key,
+                                            std::string* _aidl_return) {
   LOG(INFO) << "NxpNfc AIDL - getVendorParam";
   *_aidl_return = phNxpNciHal_getSystemProperty(key);
   return ndk::ScopedAStatus::ok();
 }
 
-::ndk::ScopedAStatus NxpNfc::setVendorParam(const std::string& key, const std::string& value, bool* _aidl_return) {
+::ndk::ScopedAStatus NxpNfc::setVendorParam(const std::string& key,
+                                            const std::string& value,
+                                            bool* _aidl_return) {
   LOG(INFO) << "NxpNfc AIDL - setVendorParam";
-  *_aidl_return=phNxpNciHal_setSystemProperty(key, value);
+  *_aidl_return = phNxpNciHal_setSystemProperty(key, value);
   return ndk::ScopedAStatus::ok();
 }
 
@@ -57,9 +61,10 @@ namespace nxpnfc_aidl {
   }
 
   ALOGD("NxpNfc::resetEse Exit");
-  return status == NFCSTATUS_SUCCESS ? ndk::ScopedAStatus::ok()
-                    : ndk::ScopedAStatus::fromServiceSpecificError(
-                              static_cast<int64_t>(status));
+  return status == NFCSTATUS_SUCCESS
+             ? ndk::ScopedAStatus::ok()
+             : ndk::ScopedAStatus::fromServiceSpecificError(
+                   static_cast<int64_t>(status));
 }
 
 ::ndk::ScopedAStatus NxpNfc::setNxpTransitConfig(const std::string& strval,
@@ -75,7 +80,7 @@ namespace nxpnfc_aidl {
                               static_cast<bool>(*_aidl_return));
 }
 
-}  // namespace nxpnfc
+}  // namespace nxpnfc_aidl
 }  // namespace nxp
 }  // namespace vendor
 }  // namespace aidl

@@ -35,14 +35,16 @@ std::shared_ptr<INfcClientCallback> Nfc::mCallback = nullptr;
 AIBinder_DeathRecipient* clientDeathRecipient = nullptr;
 
 void OnDeath(void* cookie) {
-    if (Nfc::mCallback != nullptr && !AIBinder_isAlive(Nfc::mCallback->asBinder().get())) {
+  if (Nfc::mCallback != nullptr &&
+      !AIBinder_isAlive(Nfc::mCallback->asBinder().get())) {
         LOG(INFO) << __func__ << " Nfc service has died";
         Nfc* nfc = static_cast<Nfc*>(cookie);
         nfc->close(NfcCloseType::DISABLE);
     }
 }
 
-::ndk::ScopedAStatus Nfc::open(const std::shared_ptr<INfcClientCallback>& clientCallback) {
+::ndk::ScopedAStatus Nfc::open(
+    const std::shared_ptr<INfcClientCallback>& clientCallback) {
     LOG(INFO) << "Nfc::open";
     if (clientCallback == nullptr) {
         LOG(INFO) << "Nfc::open null callback";
@@ -52,8 +54,8 @@ void OnDeath(void* cookie) {
     Nfc::mCallback = clientCallback;
 
     clientDeathRecipient = AIBinder_DeathRecipient_new(OnDeath);
-    auto linkRet = AIBinder_linkToDeath(clientCallback->asBinder().get(), clientDeathRecipient,
-                                        this /* cookie */);
+  auto linkRet = AIBinder_linkToDeath(clientCallback->asBinder().get(),
+                                      clientDeathRecipient, this /* cookie */);
     if (linkRet != STATUS_OK) {
         LOG(ERROR) << __func__ << ": linkToDeath failed: " << linkRet;
         // Just ignore the error.
@@ -62,7 +64,8 @@ void OnDeath(void* cookie) {
     printNfcMwVersion();
     int ret = phNxpNciHal_open(eventCallback, dataCallback);
     LOG(INFO) << "Nfc::open Exit";
-    return ret == NFCSTATUS_SUCCESS ? ndk::ScopedAStatus::ok()
+  return ret == NFCSTATUS_SUCCESS
+             ? ndk::ScopedAStatus::ok()
                     : ndk::ScopedAStatus::fromServiceSpecificError(
                               static_cast<int32_t>(NfcStatus::FAILED));
 }
@@ -83,9 +86,10 @@ void OnDeath(void* cookie) {
     Nfc::mCallback = nullptr;
     AIBinder_DeathRecipient_delete(clientDeathRecipient);
     clientDeathRecipient = nullptr;
-    return ret == NFCSTATUS_SUCCESS ? ndk::ScopedAStatus::ok()
-                    : ndk::ScopedAStatus::fromServiceSpecificError(
-                              static_cast<int32_t>(NfcStatus::FAILED));
+     return ret == NFCSTATUS_SUCCESS
+                ? ndk::ScopedAStatus::ok()
+                : ndk::ScopedAStatus::fromServiceSpecificError(
+                      static_cast<int32_t>(NfcStatus::FAILED));
 }
 
 ::ndk::ScopedAStatus Nfc::coreInitialized() {
@@ -97,7 +101,8 @@ void OnDeath(void* cookie) {
     }
     int ret = phNxpNciHal_core_initialized();
 
-    return ret == NFCSTATUS_SUCCESS ? ndk::ScopedAStatus::ok()
+  return ret == NFCSTATUS_SUCCESS
+             ? ndk::ScopedAStatus::ok()
                     : ndk::ScopedAStatus::fromServiceSpecificError(
                               static_cast<int32_t>(NfcStatus::FAILED));
 }
@@ -145,7 +150,8 @@ void OnDeath(void* cookie) {
                    static_cast<int32_t>(NfcStatus::FAILED));
 }
 
-::ndk::ScopedAStatus Nfc::write(const std::vector<uint8_t>& data, int32_t* _aidl_return) {
+::ndk::ScopedAStatus Nfc::write(const std::vector<uint8_t>& data,
+                                int32_t* _aidl_return) {
     LOG(INFO) << "write";
     if (Nfc::mCallback == nullptr) {
         LOG(ERROR) << __func__ << "mCallback null";

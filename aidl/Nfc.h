@@ -29,6 +29,7 @@
 #include <aidl/android/hardware/nfc/ProtocolDiscoveryConfig.h>
 #include <android-base/logging.h>
 #include <log/log.h>
+
 #include "phNxpNciHal_ext.h"
 
 namespace aidl {
@@ -47,14 +48,16 @@ struct Nfc : public BnNfc {
   public:
     Nfc() = default;
 
-    ::ndk::ScopedAStatus open(const std::shared_ptr<INfcClientCallback>& clientCallback) override;
+    ::ndk::ScopedAStatus open(
+      const std::shared_ptr<INfcClientCallback>& clientCallback) override;
     ::ndk::ScopedAStatus close(NfcCloseType type) override;
     ::ndk::ScopedAStatus coreInitialized() override;
     ::ndk::ScopedAStatus factoryReset() override;
     ::ndk::ScopedAStatus getConfig(NfcConfig* _aidl_return) override;
     ::ndk::ScopedAStatus powerCycle() override;
     ::ndk::ScopedAStatus preDiscover() override;
-    ::ndk::ScopedAStatus write(const std::vector<uint8_t>& data, int32_t* _aidl_return) override;
+    ::ndk::ScopedAStatus write(const std::vector<uint8_t>& data,
+                             int32_t* _aidl_return) override;
     ::ndk::ScopedAStatus setEnableVerboseLogging(bool enable) override;
     ::ndk::ScopedAStatus isVerboseLoggingEnabled(bool* _aidl_return) override;
 
