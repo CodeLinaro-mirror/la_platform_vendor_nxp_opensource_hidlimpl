@@ -67,12 +67,12 @@ namespace nxpnfc_aidl {
                    static_cast<int64_t>(status));
 }
 
-::ndk::ScopedAStatus NxpNfc::setNxpTransitConfig(const std::string& strval,
+::ndk::ScopedAStatus NxpNfc::setNxpTransitConfig(const std::string& strVal,
                                                  bool* _aidl_return) {
   *_aidl_return = false;
   ALOGD("NxpNfc::setNxpTransitConfig Entry");
 
-  *_aidl_return = phNxpNciHal_setNxpTransitConfig((char*)strval.c_str(), (uint64_t)strval.size());
+  *_aidl_return = phNxpNciHal_setNxpTransitConfig((char*)strVal.c_str(), (uint64_t)strVal.size());
 
   ALOGD("NxpNfc::setNxpTransitConfig Exit");
   return *_aidl_return == true ? ndk::ScopedAStatus::ok()
