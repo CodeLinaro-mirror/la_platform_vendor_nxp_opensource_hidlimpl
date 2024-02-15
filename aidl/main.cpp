@@ -50,6 +50,11 @@ void startNxpNfcAidlService() {
 }
 
 int main() {
+
+// Not register HAL service if device node is not present
+  if (access("/dev/nq-nci",F_OK)!=0)
+    ABinderProcess_joinThreadPool();
+
   // Ignore this dlopen if you don't need it.
   std::string valueStr =
       android::base::GetProperty("persist.vendor.nfc.nxppreprocess", "Done");
