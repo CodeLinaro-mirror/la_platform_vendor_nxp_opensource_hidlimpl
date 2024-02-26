@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- *  Copyright 2019-2021 NXP
+ *  Copyright 2019-2022 NXP
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -60,17 +60,20 @@ namespace nfc {
 namespace V1_2 {
 namespace implementation {
 
-using ::android::hidl::base::V1_0::IBase;
-using ::android::hardware::nfc::V1_2::INfc;
+using ::android::sp;
 using ::android::hardware::hidl_array;
 using ::android::hardware::hidl_memory;
 using ::android::hardware::hidl_string;
 using ::android::hardware::hidl_vec;
 using ::android::hardware::Return;
 using ::android::hardware::Void;
-using ::android::sp;
+using ::android::hardware::nfc::V1_2::INfc;
+using ::android::hidl::base::V1_0::IBase;
 struct Nfc : public V1_2::INfc, public hidl_death_recipient {
  public:
+  // Methods from ::android::hidl::base::V1_0::IBase follow.
+  Return<void> debug(const hidl_handle& handle,
+                     const hidl_vec<hidl_string>& options) override;
   // Methods from ::android::hardware::nfc::V1_0::INfc follow.
   Return<V1_0::NfcStatus> open(
       const sp<V1_0::INfcClientCallback>& clientCallback) override;
@@ -97,13 +100,13 @@ struct Nfc : public V1_2::INfc, public hidl_death_recipient {
       auto ret = mCallbackV1_1->sendEvent_1_1((V1_1::NfcEvent)event,
                                               (V1_0::NfcStatus)status);
       if (!ret.isOk()) {
-        ALOGW("failed to send event for mCallbackV1_1!!!");
+        ALOGW("failed to send event!!!");
       }
     } else if (mCallbackV1_0 != nullptr) {
       auto ret = mCallbackV1_0->sendEvent((V1_0::NfcEvent)event,
                                           (V1_0::NfcStatus)status);
       if (!ret.isOk()) {
-        ALOGE("failed to send event for mCallbackV1_0!!!");
+        ALOGE("failed to send event!!!");
       }
     }
   }
@@ -114,12 +117,12 @@ struct Nfc : public V1_2::INfc, public hidl_death_recipient {
     if (mCallbackV1_1 != nullptr) {
       auto ret = mCallbackV1_1->sendData(data);
       if (!ret.isOk()) {
-        ALOGW("failed to send data for mCallbackV1_1!!!");
+        ALOGW("failed to send data!!!");
       }
     } else if (mCallbackV1_0 != nullptr) {
       auto ret = mCallbackV1_0->sendData(data);
       if (!ret.isOk()) {
-        ALOGE("failed to send data for mCallbackV1_0!!!");
+        ALOGE("failed to send data!!!");
       }
     }
   }
