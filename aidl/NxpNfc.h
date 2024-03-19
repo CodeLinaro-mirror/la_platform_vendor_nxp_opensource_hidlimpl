@@ -42,7 +42,7 @@ class NxpNfc : public BnNxpNfc {
                                       const std::string& value,
                                       bool* _aidl_return) override;
   ::ndk::ScopedAStatus resetEse(int64_t resetType, bool* _aidl_return) override;
-  ::ndk::ScopedAStatus setNxpTransitConfig(const std::string& strval,
+  ::ndk::ScopedAStatus setNxpTransitConfig(const std::string& strVal,
                                            bool* _aidl_return) override;
 };
 
