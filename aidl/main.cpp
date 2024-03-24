@@ -48,7 +48,10 @@ int main() {
 
   // Not register HAL service if device node is not present
   if (access("/dev/nq-nci",F_OK)!=0)
-    ABinderProcess_joinThreadPool();
+  {
+    ALOGE("NFC AIDL HAL device node not yet available");
+    return 1;
+  }
 
   if (!ABinderProcess_setThreadPoolMaxThreadCount(1)) {
     ALOGE("failed to set thread pool max thread count");
