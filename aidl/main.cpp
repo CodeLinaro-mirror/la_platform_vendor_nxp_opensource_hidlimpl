@@ -61,7 +61,7 @@ int main() {
     else
     {
       ALOGE("NFC AIDL HAL device node not yet available");
-      usleep(200000);
+      usleep(300000);
       ++i;
     }
   }while(i < 3);
