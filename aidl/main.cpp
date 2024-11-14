@@ -55,7 +55,6 @@ int main() {
   if (access("/dev/nq-nci",F_OK)!=0)
   {
     ALOGE("NFC AIDL HAL device node not yet available");
-    return 1;
   }
 
   // Ignore this dlopen if you don't need it.
