@@ -26,11 +26,14 @@
 #include "NxpNfc.h"
 #include "phNxpNciHal_Adaptation.h"
 #include "phNxpNciHal_Recovery.h"
+#include "phNxpNciHal_WiredSeIface.h"
 
 using ::aidl::android::hardware::nfc::Nfc;
 using ::aidl::vendor::nxp::nxpnfc_aidl::INxpNfc;
 using ::aidl::vendor::nxp::nxpnfc_aidl::NxpNfc;
 using namespace std;
+
+extern WiredSeHandle gWiredSeHandle;
 
 void startNxpNfcAidlService() {
   ALOGI("NXP NFC Extn Service is starting.");
@@ -85,6 +88,10 @@ int main() {
   phNxpNciHal_RecoverFWTearDown();
 #endif
   thread t1(startNxpNfcAidlService);
+  // Starts Wired SE HAL instance if platform supports
+  if (phNxpNciHal_WiredSeStart(&gWiredSeHandle) != NFCSTATUS_SUCCESS) {
+    ALOGE("Wired Se HAL Disabled");
+  }
   ABinderProcess_joinThreadPool();
   return 0;
 }
