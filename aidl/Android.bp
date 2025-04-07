@@ -1,7 +1,7 @@
-cc_binary {
+/*cc_binary {
     name: "android.hardware.nqnfc-service.nxp",
     relative_install_path: "hw",
-    init_rc: ["nfc-service-nxp.rc"],
+    init_rc: ["1.0/nfc-service-nxp.rc"],
     vendor: true,
     cflags: [
         "-Wall",
@@ -24,10 +24,10 @@ cc_binary {
         "vendor.nxp.nxpnfc_aidl-V1-ndk",
     ],
     srcs: [
-        "main.cpp",
-        "Nfc.cpp",
-        "NfcExtns.cpp",
-        "NxpNfc.cpp",
+        "1.0/main.cpp",
+        "1.0/Nfc.cpp",
+        "1.0/NfcExtns.cpp",
+        "1.0/NxpNfc.cpp",
     ],
     include_dirs: [
        "vendor/nxp/opensource/halimpl/snxxx/halimpl/common",
@@ -40,6 +40,62 @@ cc_binary {
        "vendor/nxp/opensource/halimpl/snxxx/halimpl/recovery",
        //"vendor/nxp/opensource/halimpl/snxxx/halimpl/eseclients_extns/inc/",
        "vendor/nxp/opensource/halimpl/snxxx/extns/impl/nxpnfc/aidl",
+    ],
+
+    header_libs: [
+        "libhardware_headers",
+    ],
+    sanitize: {
+        cfi: true,
+        misc_undefined: ["signed-integer-overflow",
+                         "unsigned-integer-overflow"],
+    },
+}*/
+
+cc_binary {
+    name: "android.hardware.nqnfc-service.nxp",
+    relative_install_path: "hw",
+    init_rc: ["2.0/nfc2-service-nxp.rc"],
+    vendor: true,
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wextra",
+        "-DNXP_NFC_RECOVERY=TRUE",
+    ],
+    shared_libs: [
+	"nfc_nci.nqx.default.hw",
+        "libbase",
+        "liblog",
+        "libcutils",
+        "libutils",
+        "libhidlbase",
+        "libbinder_ndk",
+        "android.hardware.nfc-V2-ndk",
+        "android.hardware.nfc@1.2",
+        "libhardware",
+        "vendor.nxp.hardware.nfc@2.0",
+        "vendor.nxp.nxpnfc_aidl-V1-ndk",
+        "libmemunreachable",
+    ],
+    srcs: [
+        "2.0/main.cpp",
+        "2.0/Nfc.cpp",
+        "2.0/NfcExtns.cpp",
+        "2.0/NxpNfc.cpp",
+    ],
+    include_dirs: [
+       "vendor/nxp/opensource/halimpl/snxxx/halimpl_v2/common",
+       "vendor/nxp/opensource/halimpl/snxxx/halimpl_v2/dnld",
+       "vendor/nxp/opensource/halimpl/snxxx/halimpl_v2/hal",
+       "vendor/nxp/opensource/halimpl/snxxx/halimpl_v2/inc",
+       "vendor/nxp/opensource/halimpl/snxxx/halimpl_v2/log",
+       "vendor/nxp/opensource/halimpl/snxxx/halimpl_v2/utils",
+       "vendor/nxp/opensource/halimpl/snxxx/halimpl_v2/mifare",
+       "vendor/nxp/opensource/halimpl/snxxx/halimpl_v2/recovery",
+       //"vendor/nxp/opensource/halimpl/snxxx/halimpl_v2/eseclients_extns/inc/",
+       "vendor/nxp/opensource/halimpl/snxxx/extns/impl/nxpnfc/aidl",
+       "vendor/nxp/opensource/halimpl/snxxx/halimpl_v2/nfc_comm",
     ],
 
     header_libs: [
