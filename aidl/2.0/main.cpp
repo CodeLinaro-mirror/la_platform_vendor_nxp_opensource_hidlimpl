@@ -86,7 +86,7 @@ int main() {
       usleep(300000);
       ++i;
     }
-  }while(i < 3);
+  }while(i < 7);
 
   // Not register HAL service if device node is not present
   if (access("/dev/nq-nci",F_OK)!=0) {
