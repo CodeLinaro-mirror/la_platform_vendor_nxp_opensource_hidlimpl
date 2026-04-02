@@ -2,3 +2,7 @@ service vendor.nfc_hal_service /vendor/bin/hw/android.hardware.nqnfc-service.nxp
     class early_hal
     user nfc
     group nfc oem_2912
+    disabled
+on post-fs-data
+    wait /dev/nq-nci
+    start vendor.nfc_hal_service
