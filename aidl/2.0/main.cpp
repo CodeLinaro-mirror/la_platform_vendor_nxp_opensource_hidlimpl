@@ -73,21 +73,6 @@ void startNxpNfcAidlService() {
 
 int main() {
 
-  uint8_t i= 0;
-
-  // check if the Device Node can be accesible with in time limit / iterations.
-  do
-  {
-    if (access("/dev/nq-nci",F_OK) == 0)
-      break;
-    else
-    {
-      ALOGE("NFC AIDL HAL device node not yet available");
-      usleep(300000);
-      ++i;
-    }
-  }while(i < 3);
-
   // Not register HAL service if device node is not present
   if (access("/dev/nq-nci",F_OK)!=0) {
     ALOGE("NFC Device node not present, AIDL service blocked");
